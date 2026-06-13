@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Dengue Fever – All Types | Comprehensive MCN Review | DOH Philippines</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <style>
+        .transition-all { transition: all 0.3s ease; }
+        .recall-mode .reveal-text {
+            background-color: #cbd5e1;
+            color: transparent;
+            border-radius: 0.375rem;
+            padding: 0 0.25rem;
+            cursor: pointer;
+            transition: background-color 0.2s, color 0.2s;
+            box-shadow: inset 0 0 0 1px #94a3b8;
+        }
+        .recall-mode .reveal-text:hover,
+        .recall-mode .reveal-text.revealed {
+            background-color: #fef08a;
+            color: #1e293b;
+            box-shadow: none;
+        }
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #f1f5f9; }
+        ::-webkit-scrollbar-thumb { background: #b45309; border-radius: 8px; }
+        .content-section { animation: fade 0.3s ease; }
+        @keyframes fade { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+        .quiz-feedback-correct { background-color: #dcfce7; border-left: 4px solid #22c55e; }
+        .quiz-feedback-wrong { background-color: #fee2e2; border-left: 4px solid #ef4444; }
+        .locked-section { opacity: 0.6; cursor: not-allowed; pointer-events: none; }
+        .flashcard { background: #fff; border-radius: 1rem; box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1); transition: transform 0.2s; cursor: pointer; border: 1px solid #e2e8f0; }
+        .flashcard:hover { transform: translateY(-5px); }
+    </style>
+    <script>
+        tailwind.config = {
+            theme: { extend: { colors: { dengue: { light: '#fef3c7', DEFAULT: '#b45309', dark: '#78350f' } } } }
+        }
+    </script>
+</head>
+<body class="bg-slate-50 h-screen flex flex-col md:flex-row font-sans text-slate-800 overflow-hidden">
+
+    <!-- Mobile Header -->
+    <div class="md:hidden bg-dengue-dark text-white p-4 flex justify-between items-center shadow-md z-30 shrink-0">
+        <button onclick="toggleMobileMenu()" class="text-white focus:outline-none z-40">
+            <i class="fa-solid fa-bars text-2xl"></i>
+        </button>
+        <h1 class="font-bold text-lg absolute left-1/2 transform -translate-x-1/2 pointer-events-none">
+            <i class="fa-solid fa-mosquito mr-2"></i> Dengue
+        </h1>
+        <div class="w-8"></div>
+    </div>
+
+    <!-- Sidebar Navigation -->
+    <nav id="sidebar" class="hidden md:flex flex-col w-full md:w-80 bg-white shadow-2xl h-full absolute md:relative z-30 transition-transform duration-300 shrink-0 border-r border-slate-200">
+        <div class="p-6 bg-gradient-to-br from-dengue-dark to-dengue text-white hidden md:block shrink-0">
+            <h1 class="font-black text-2xl tracking-wide"><i class="fa-regular fa-hand-peace mr-2"></i> Dengue Fever</h1>
+            <p class="text-sm text-amber-200 mt-1 font-medium">All Types · DF · DHF · DSS</p>
+        </div>
+        <div class="flex-1 overflow-y-auto py-4">
+            <ul class="space-y-1 text-sm font-medium">
+                <li><button onclick="showSection('home')" id="btn-home" class="nav-btn w-full text-left px-6 py-3 bg-dengue-light text-dengue-dark border-r-4 border-dengue-dark transition-colors"><i class="fa-solid fa-house w-6 nav-icon"></i><i class="fa-solid fa-lock w-6 hidden"></i> Home / Start</button></li>
+                <li><button onclick="showSection('overview')" id="btn-overview" class="nav-btn w-full text-left px-6 py-3 text-slate-700 hover:bg-slate-50 transition-colors locked-section"><i class="fa-solid fa-chart-line w-6 nav-icon hidden"></i><i class="fa-solid fa-lock w-6 text-slate-400"></i> Overview & Epidemiology</button></li>
+                <li><button onclick="showSection('clinical')" id="btn-clinical" class="nav-btn w-full text-left px-6 py-3 text-slate-700 hover:bg-slate-50 transition-colors locked-section"><i class="fa-solid fa-list w-6 nav-icon hidden"></i><i class="fa-solid fa-lock w-6 text-slate-400"></i> Clinical Classification (DF, DHF, DSS)</button></li>
+                <li><button onclick="showSection('phases')" id="btn-phases" class="nav-btn w-full text-left px-6 py-3 text-slate-700 hover:bg-slate-50 transition-colors locked-section"><i class="fa-solid fa-chart-line w-6 nav-icon hidden"></i><i class="fa-solid fa-lock w-6 text-slate-400"></i> Clinical Phases (Febrile, Critical, Recovery)</button></li>
+                <li><button onclick="showSection('warning')" id="btn-warning" class="nav-btn w-full text-left px-6 py-3 text-slate-700 hover:bg-slate-50 transition-colors locked-section"><i class="fa-solid fa-triangle-exclamation w-6 nav-icon hidden"></i><i class="fa-solid fa-lock w-6 text-slate-400"></i> Warning Signs & Diagnosis</button></li>
+                <li><button onclick="showSection('management')" id="btn-management" class="nav-btn w-full text-left px-6 py-3 text-slate-700 hover:bg-slate-50 transition-colors locked-section"><i class="fa-solid fa-capsules w-6 nav-icon hidden"></i><i class="fa-solid fa-lock w-6 text-slate-400"></i> Treatment & Fluid Management</button></li>
+                <li><button onclick="showSection('nursing')" id="btn-nursing" class="nav-btn w-full text-left px-6 py-3 text-slate-700 hover:bg-slate-50 transition-colors locked-section"><i class="fa-solid fa-user-nurse w-6 nav-icon hidden"></i><i class="fa-solid fa-lock w-6 text-slate-400"></i> Nursing Care & Complications</button></li>
+                <li><button onclick="showSection('prevention')" id="btn-prevention" class="nav-btn w-full text-left px-6 py-3 text-slate-700 hover:bg-slate-50 transition-colors locked-section"><i class="fa-solid fa-shield-heart w-6 nav-icon hidden"></i><i class="fa-solid fa-lock w-6 text-slate-400"></i> Prevention (4S Strategy)</button></li>
+                <li><button onclick="showSection('flashcards')" id="btn-flashcards" class="nav-btn w-full text-left px-6 py-3 text-slate-700 hover:bg-slate-50 transition-colors border-t border-slate-200 mt-2 locked-section"><i class="fa-solid fa-cards w-6 text-dengue nav-icon hidden"></i><i class="fa-solid fa-lock w-6 text-slate-400"></i> Flashcards & Mnemonics</button></li>
+                <li><button onclick="showSection('final_quiz_sec')" id="btn-final_quiz_sec" class="nav-btn w-full text-left px-6 py-3 text-slate-700 hover:bg-slate-50 transition-colors locked-section"><i class="fa-solid fa-graduation-cap w-6 text-amber-500 nav-icon hidden"></i><i class="fa-solid fa-lock w-6 text-slate-400"></i> Final 50‑Item Exam</button></li>
+            </ul>
+        </div>
+    </nav>
+
+    <main class="flex-1 h-full overflow-y-auto bg-slate-100 relative w-full">
+        <div class="fixed top-16 md:top-4 right-4 md:right-8 z-40 flex items-center bg-white/90 backdrop-blur px-4 py-3 rounded-full shadow-lg border border-slate-200 cursor-pointer hover:bg-slate-50 transition-colors" onclick="toggleRecallMode()">
+            <span class="mr-3 text-sm font-bold text-slate-700 hidden md:inline"><i class="fa-solid fa-brain text-dengue mr-1"></i> Active Recall</span>
+            <button id="recall-toggle" class="w-12 h-6 bg-slate-300 rounded-full relative transition-colors duration-300 focus:outline-none shadow-inner pointer-events-none">
+                <div id="recall-knob" class="w-5 h-5 bg-white rounded-full absolute top-0.5 left-0.5 transition-transform duration-300 shadow"></div>
+            </button>
+        </div>
+
+        <div class="p-4 md:p-8 max-w-6xl mx-auto pb-32">
+            <!-- HOME SECTION -->
+            <section id="home" class="content-section flex flex-col items-center justify-center min-h-[80vh] text-center block">
+                <div class="bg-gradient-to-br from-slate-800 to-dengue-dark text-white rounded-3xl shadow-2xl p-10 md:p-16 w-full relative overflow-hidden">
+                    <div class="absolute top-0 right-0 -mt-10 -mr-10 text-white opacity-5 pointer-events-none"><i class="fa-solid fa-mosquito text-[20rem]"></i></div>
+                    <div class="relative z-10">
+                        <div class="bg-white/10 backdrop-blur-sm inline-block p-4 rounded-full text-amber-300 mb-6 shadow-sm border border-white/20">
+                            <i class="fa-solid fa-book-open text-5xl"></i>
+                        </div>
+                        <h3 class="text-xl font-bold text-slate-300 mb-2 uppercase tracking-widest">Maternal & Child Health Nursing</h3>
+                        <h1 class="text-4xl md:text-6xl font-black text-white mb-6 leading-tight drop-shadow-md">Dengue Fever</h1>
+                        <div class="bg-white/10 backdrop-blur inline-block px-6 py-3 rounded-full mb-10 border border-white/20">
+                            <p class="text-lg text-white font-medium">Classic Dengue · Dengue Hemorrhagic Fever (DHF) · Dengue Shock Syndrome (DSS) | <strong>DOH Philippines, 2025 Guidelines</strong></p>
+                        </div>
+                        <button onclick="unlockFirstSection()" class="bg-slate-600 hover:bg-slate-500 text-white font-black py-4 px-10 rounded-full shadow-xl transition-transform hover:scale-105 text-lg flex items-center mx-auto focus:outline-none">
+                            Begin Module <i class="fa-solid fa-arrow-right ml-3"></i>
+                        </button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 1. OVERVIEW & EPIDEMIOLOGY -->
+            <section id="overview" class="content-section hidden">
+                <div class="bg-white rounded-2xl shadow-lg p-6 md:p-8">
+                    <h2 class="text-3xl font-black text-slate-800 mb-4 border-b-2 border-dengue pb-3"><i class="fa-solid fa-chart-line text-dengue mr-4"></i> Overview & Epidemiology</h2>
+                    <p><strong>Dengue fever</strong> – a mosquito‑borne viral disease caused by any of the four dengue virus serotypes (DEN‑1, DEN‑2, DEN‑3, DEN‑4). Transmitted by the bite of an infected <em>Aedes aegypti</em> mosquito. It is endemic in the Philippines, with year‑round transmission and seasonal peaks (July–September).</p>
+                    <div class="grid md:grid-cols-2 gap-5 mt-4">
+                        <div class="bg-slate-50 p-4 rounded-xl"><strong>📊 Philippines Data (2025)</strong><br><span class="reveal-text">• From Jan 1 to Mar 1, 2025: 62,313 cases (73% increase vs 2024).<br>• Nationwide, 123,291 cases reported as of June 2025.<br>• Fatality rate remained low at 0.4% (4 deaths/1000 cases).<br>• Most affected regions: Calabarzon, NCR, Central Luzon.</span><br><span class="text-xs text-slate-500">Sources: DOH, PNA</span></div>
+                        <div class="bg-slate-50 p-4 rounded-xl"><strong>🎯 Transmission & Incubation</strong><br><span class="reveal-text">• Incubation period: 3–14 days (usually 5–7 days).<br>• Vector: <em>Aedes aegypti</em> (day‑biting mosquito, peak activity early morning and late afternoon).<br>• Secondary infection with different serotype increases risk of severe dengue (DHF/DSS).</span></div>
+                    </div>
+                    <canvas id="dengueChart" width="400" height="200" style="max-width:100%; margin-top:1rem;"></canvas>
+                    <div class="bg-amber-50 p-3 rounded-lg mt-4"><strong>⚠️ Key point:</strong> <span class="reveal-text">Dengue is a notifiable disease; early reporting and case management reduce mortality.</span></div>
+                    <button onclick="openQuiz('overview')" class="mt-6 w-full bg-slate-800 text-white font-black py-3 rounded-xl">Take Quiz → Unlock Next</button>
+                </div>
+            </section>
+
+            <!-- 2. CLINICAL CLASSIFICATION (DF, DHF, DSS) -->
+            <section id="clinical" class="content-section hidden">
+                <div class="bg-white rounded-2xl shadow-lg p-6 md:p-8">
+                    <h2 class="text-3xl font-black text-slate-800 mb-4 border-b-2 border-dengue pb-3"><i class="fa-solid fa-list text-dengue mr-4"></i> Clinical Classification (DF, DHF, DSS)</h2>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-sm border-collapse border">
+                            <thead class="bg-dengue text-white"><tr><th class="p-2">Category</th><th class="p-2">Key Features</th><th class="p-2">Management Level</th></tr></thead>
+                            <tbody>
+                                <tr class="bg-slate-50"><td class="border p-2 font-bold">Classic Dengue Fever (DF)</td><td class="reveal-text">Sudden high fever (2–7 days), severe headache, retro‑orbital pain, myalgia, arthralgia, rash. No plasma leakage or bleeding tendency.</td><td class="reveal-text">Outpatient (home care)</td></tr>
+                                <tr><td class="border p-2 font-bold">Dengue Hemorrhagic Fever (DHF)</td><td class="reveal-text">Fever + bleeding tendency (positive tourniquet test, petechiae, gum bleeding), thrombocytopenia (<100,000/µL), evidence of plasma leakage (hemoconcentration, ascites, pleural effusion). Grades I‑II.</td><td class="reveal-text">Hospital admission</td></tr>
+                                <tr class="bg-slate-50"><td class="border p-2 font-bold">Dengue Shock Syndrome (DSS)</td><td class="reveal-text">DHF + signs of circulatory failure (narrow pulse pressure <20 mmHg, hypotension for age, cold clammy skin, rapid weak pulse). Grades III‑IV.</td><td class="reveal-text">ICU / Emergency</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="bg-indigo-50 p-3 rounded-lg mt-4"><i class="fa-regular fa-message"></i> <strong>WHO 1997 classification (DHF grades):</strong> <span class="reveal-text">Grade I – fever + positive tourniquet; Grade II – spontaneous bleeding; Grade III – circulatory failure (weak pulse, narrow pulse pressure); Grade IV – profound shock (undetectable BP). Grades I & II = DHF; Grades III & IV = DSS.</span></div>
+                    <button onclick="openQuiz('clinical')" class="mt-6 w-full bg-slate-800 text-white font-black py-3 rounded-xl">Take Quiz → Unlock Next</button>
+                </div>
+            </section>
+
+            <!-- 3. CLINICAL PHASES (Febrile, Critical, Recovery) -->
+            <section id="phases" class="content-section hidden">
+                <div class="bg-white rounded-2xl shadow-lg p-6 md:p-8">
+                    <h2 class="text-3xl font-black text-slate-800 mb-4 border-b-2 border-dengue pb-3"><i class="fa-solid fa-chart-line text-dengue mr-4"></i> Clinical Phases (Febrile, Critical, Recovery)</h2>
+                    <div class="grid md:grid-cols-3 gap-5">
+                        <div class="bg-red-50 p-4 rounded-xl"><strong>🌡️ Febrile Phase (Days 1–3)</strong><br><span class="reveal-text">Sudden high fever (>38.5°C), facial flushing, body aches, headache, retro‑orbital pain, myalgia, arthralgia. May have vomiting, anorexia. Risk of dehydration and febrile seizures in children.</span></div>
+                        <div class="bg-amber-50 p-4 rounded-xl"><strong>⚠️ Critical Phase (Days 3–7)</strong><br><span class="reveal-text">Begins at defervescence (fever drops). Lasts 24–48 hours. Plasma leakage occurs → hemoconcentration, ascites, pleural effusion, shock. Warning signs: severe abdominal pain, persistent vomiting, mucosal bleeding, lethargy, hepatomegaly.</span></div>
+                        <div class="bg-green-50 p-4 rounded-xl"><strong>✅ Recovery Phase (Days 7–10)</strong><br><span class="reveal-text">Fluid reabsorption from extravascular compartments; hemodilution (Hct decreases), generalized rash (maculopapular), bradycardia, diuresis. Patient feels hungry and well.</span></div>
+                    </div>
+                    <canvas id="phaseChart" width="400" height="200" style="max-width:100%; margin-top:1rem;"></canvas>
+                    <div class="bg-blue-50 p-3 rounded-lg mt-4"><i class="fa-regular fa-lightbulb"></i> <strong>Critical phase is the most dangerous.</strong> <span class="reveal-text">Progression to shock is rapid; requires close monitoring of vital signs, hematocrit, and urine output.</span></div>
+                    <button onclick="openQuiz('phases')" class="mt-6 w-full bg-slate-800 text-white font-black py-3 rounded-xl">Take Quiz → Unlock Next</button>
+                </div>
+            </section>
+
+            <!-- 4. WARNING SIGNS & DIAGNOSIS -->
+            <section id="warning" class="content-section hidden">
+                <div class="bg-white rounded-2xl shadow-lg p-6 md:p-8">
+                    <h2 class="text-3xl font-black text-slate-800 mb-4 border-b-2 border-dengue pb-3"><i class="fa-solid fa-triangle-exclamation text-dengue mr-4"></i> Warning Signs & Diagnosis</h2>
+                    <div class="grid md:grid-cols-2 gap-5">
+                        <div class="bg-red-50 p-4 rounded-xl"><strong>🚨 Dengue Warning Signs (WHO)</strong><br><span class="reveal-text">• Abdominal pain or tenderness<br>• Persistent vomiting (≥3 times/day)<br>• Mucosal bleeding (gums, nose)<br>• Lethargy, restlessness<br>• Liver enlargement >2 cm<br>• Clinical fluid accumulation (ascites, pleural effusion)<br>• Increasing Hct with decreasing platelet count</span><br><span class="font-bold">→ Immediate hospitalization!</span></div>
+                        <div class="bg-blue-50 p-4 rounded-xl"><strong>🔬 Diagnostic Tests</strong><br><span class="reveal-text">• Complete blood count: leukopenia, thrombocytopenia (<100,000), hemoconcentration (Hct ↑)<br>• NS1 antigen test (day 1–5) – recommended by DOH as front‑line diagnosis in RHU<br>• Dengue IgM/IgG ELISA (after day 5)<br>• RT‑PCR for serotyping and confirmation<br>• Tourniquet test (positive if >20 petechiae/1 inch²)</span></div>
+                    </div>
+                    <div class="bg-amber-50 p-3 rounded-lg mt-4"><strong>📋 Tourniquet test:</strong> <span class="reveal-text">Inflate BP cuff to midway between systolic and diastolic for 5 minutes; count petechiae. Positive test supports DHF.</span></div>
+                    <button onclick="openQuiz('warning')" class="mt-6 w-full bg-slate-800 text-white font-black py-3 rounded-xl">Take Quiz → Unlock Next</button>
+                </div>
+            </section>
+
+            <!-- 5. TREATMENT & FLUID MANAGEMENT -->
+            <section id="management" class="content-section hidden">
+                <div class="bg-white rounded-2xl shadow-lg p-6 md:p-8">
+                    <h2 class="text-3xl font-black text-slate-800 mb-4 border-b-2 border-dengue pb-3"><i class="fa-solid fa-capsules text-dengue mr-4"></i> Treatment & Fluid Management</h2>
+                    <div class="grid md:grid-cols-2 gap-5">
+                        <div><strong>💊 DF (Outpatient)</strong><br><span class="reveal-text">• Oral rehydration (adequate fluids: water, oral rehydration solution, fresh juices)<br>• Paracetamol 10‑15 mg/kg/dose q4‑6h (max 4g/day)<br>• Avoid aspirin, NSAIDs, ibuprofen (bleeding risk)<br>• Daily follow‑up until afebrile for 48h<br>• Educate about warning signs</span></div>
+                        <div><strong>🩸 DHF/DSS (Inpatient)</strong><br><span class="reveal-text">• Isotonic IV fluids (0.9% NaCl or Ringer’s lactate) – initial bolus for shock<br>• Close monitoring: vital signs, Hct q2‑4h, urine output, fluid balance<br>• Blood transfusion if bleeding with unstable Hct<br>• Organ support for severe cases (mechanical ventilation, dialysis)</span></div>
+                    </div>
+                    <div class="bg-green-50 p-3 rounded-lg mt-4"><i class="fa-regular fa-clock"></i> <strong>Fluid protocol (DOH):</strong> <span class="reveal-text">Maintenance + 5% deficit; adjust based on Hct and urine output. Stop IV fluids when Hct falls (recovery phase).</span></div>
+                    <button onclick="openQuiz('management')" class="mt-6 w-full bg-slate-800 text-white font-black py-3 rounded-xl">Take Quiz → Unlock Next</button>
+                </div>
+            </section>
+
+            <!-- 6. NURSING CARE & COMPLICATIONS -->
+            <section id="nursing" class="content-section hidden">
+                <div class="bg-white rounded-2xl shadow-lg p-6 md:p-8">
+                    <h2 class="text-3xl font-black text-slate-800 mb-4 border-b-2 border-dengue pb-3"><i class="fa-solid fa-user-nurse text-dengue mr-4"></i> Nursing Care & Complications</h2>
+                    <ul class="list-disc pl-6 space-y-2">
+                        <li><strong>Assessment:</strong> <span class="reveal-text">Monitor vital signs q1‑4h (BP, pulse, RR, temperature). Assess for shock (tachycardia, hypotension, narrow pulse pressure, cold extremities). Strict I&O; daily weight. Check for bleeding (petechiae, gum bleeding, melena).</span></li>
+                        <li><strong>Interventions:</strong> <span class="reveal-text">Administer IV fluids as prescribed; maintain fluid balance. Prevent fluid overload (puffy eyelids, dyspnea, crackles). Provide tepid sponge bath for fever. Mouth care for bleeding gums. Safety precautions: soft diet, avoid IM injections, use soft toothbrush. Emotional support for family.</span></li>
+                        <li><strong>Complications:</strong> <span class="reveal-text">• Hypovolemic shock (DSS)<br>• Hemorrhage (GI bleeding, intracranial hemorrhage)<br>• Fluid overload – pulmonary edema<br>• Organ failure: hepatic, renal, myocardial<br>• Secondary infections</span></li>
+                    </ul>
+                    <div class="bg-pink-50 p-3 rounded-lg mt-4"><i class="fa-regular fa-heart"></i> <strong>Mnemonic “C.A.R.E.”</strong> – Check vital signs, Assess fluid balance, Recognize warning signs, Educate family.</div>
+                    <button onclick="openQuiz('nursing')" class="mt-6 w-full bg-slate-800 text-white font-black py-3 rounded-xl">Take Quiz → Unlock Next</button>
+                </div>
+            </section>
+
+            <!-- 7. PREVENTION (4S STRATEGY) -->
+            <section id="prevention" class="content-section hidden">
+                <div class="bg-white rounded-2xl shadow-lg p-6 md:p-8">
+                    <h2 class="text-3xl font-black text-slate-800 mb-4 border-b-2 border-dengue pb-3"><i class="fa-solid fa-shield-heart text-dengue mr-4"></i> Prevention – DOH 4S Strategy</h2>
+                    <div class="grid md:grid-cols-2 gap-5">
+                        <div class="bg-lime-50 p-4 rounded-xl"><strong>🪲 Search & Destroy</strong><br><span class="reveal-text">Eliminate mosquito breeding sites: cover water containers, clean gutters, remove stagnant water, dispose of tires/bottles, apply larvicide.</span></div>
+                        <div class="bg-lime-50 p-4 rounded-xl"><strong>🧴 Self‑Protection</strong><br><span class="reveal-text">Use insect repellent (DEET, picaridin), wear long‑sleeved shirts and long pants, use mosquito nets/screens.</span></div>
+                        <div class="bg-lime-50 p-4 rounded-xl"><strong>🩺 Seek Early Consultation</strong><br><span class="reveal-text">Consult doctor if fever lasts >2 days, especially with warning signs. Early diagnosis reduces severe dengue risk.</span></div>
+                        <div class="bg-lime-50 p-4 rounded-xl"><strong>💨 Support Fogging/Spraying</strong><br><span class="reveal-text">Support fogging only in hotspot areas (imminent outbreak). Not routine; must be coordinated with local health authorities.</span></div>
+                    </div>
+                    <div class="bg-amber-50 p-3 rounded-lg mt-4"><i class="fa-regular fa-lightbulb"></i> <strong>Environmental sanitation:</strong> <span class="reveal-text">“No stagnant water, no mosquito breeding.” Community participation is key.</span></div>
+                    <button onclick="openQuiz('prevention')" class="mt-6 w-full bg-slate-800 text-white font-black py-3 rounded-xl">Take Quiz → Unlock Next</button>
+                </div>
+            </section>
+
+            <!-- 8. FLASHCARDS & MNEMONICS -->
+            <section id="flashcards" class="content-section hidden">
+                <div class="bg-white rounded-2xl shadow-lg p-6 md:p-8">
+                    <h2 class="text-3xl font-black text-slate-800 mb-4 border-b-2 border-dengue pb-3"><i class="fa-solid fa-cards text-dengue mr-4"></i> Flashcards & Mnemonics</h2>
+                    <div class="grid md:grid-cols-2 gap-5">
+                        <div class="flashcard p-4" onclick="toggleFlash(this)"><div class="font-bold text-dengue">Q: Define Dengue Fever</div><div class="flash-answer hidden mt-2">Arbovirus infection transmitted by Aedes aegypti mosquito</div></div>
+                        <div class="flashcard p-4" onclick="toggleFlash(this)"><div class="font-bold text-dengue">Q: Classic triad of DF?</div><div class="flash-answer hidden mt-2">High fever, severe body pain, rash</div></div>
+                        <div class="flashcard p-4" onclick="toggleFlash(this)"><div class="font-bold text-dengue">Q: DHF diagnostic criteria?</div><div class="flash-answer hidden mt-2">Fever, bleeding tendency, thrombocytopenia, plasma leakage</div></div>
+                        <div class="flashcard p-4" onclick="toggleFlash(this)"><div class="font-bold text-dengue">Q: DSS is DHF +?</div><div class="flash-answer hidden mt-2">Circulatory failure (narrow pulse pressure, hypotension)</div></div>
+                        <div class="flashcard p-4" onclick="toggleFlash(this)"><div class="font-bold text-dengue">Q: DOH 4S strategy?</div><div class="flash-answer hidden mt-2">Search & destroy, Self‑protection, Seek early consultation, Support fogging</div></div>
+                        <div class="flashcard p-4" onclick="toggleFlash(this)"><div class="font-bold text-dengue">Q: Warning signs of severe dengue?</div><div class="flash-answer hidden mt-2">Abdominal pain, persistent vomiting, bleeding, lethargy, hepatomegaly, rising Hct</div></div>
+                    </div>
+                    <div class="mt-6 bg-amber-50 p-4 rounded-xl"><strong>🧠 Mnemonics</strong><br><span class="reveal-text">“D.H.F.” – Dengue Hemorrhagic Fever.<br>“D.S.S.” – Dengue Shock Syndrome.<br>“4S” – DOH prevention strategy.<br>“W.A.R.N.” – Warning signs: Abdominal pain, Vomiting, Bleeding, Lethargy, Rising Hct.<br>“C.A.R.E.” – Nursing interventions: Check, Assess, Recognize, Educate.</span></div>
+                    <button onclick="openQuiz('flashcards')" class="mt-6 w-full bg-slate-800 text-white font-black py-3 rounded-xl">Take Quiz → Unlock Final Exam</button>
+                </div>
+            </section>
+
+            <!-- FINAL EXAM SECTION -->
+            <section id="final_quiz_sec" class="content-section hidden">
+                <div class="bg-white rounded-2xl shadow-lg p-6 md:p-8 text-center min-h-[60vh] flex flex-col justify-center items-center">
+                    <i class="fa-solid fa-graduation-cap text-8xl text-amber-500 mb-6"></i>
+                    <h2 class="text-4xl font-black text-slate-800 mb-4">Final 50‑Item Exam: Dengue Fever</h2>
+                    <p class="text-lg text-slate-600 mb-8 max-w-2xl">Covers epidemiology, clinical classification (DF, DHF, DSS), phases, warning signs, diagnosis, treatment, nursing care, prevention (4S), and mnemonics. Score ≥75% to pass.</p>
+                    <button onclick="openQuiz('final_quiz')" class="w-full max-w-md bg-slate-800 text-white font-black py-4 rounded-xl shadow-md text-xl">Start Final Exam</button>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <!-- QUIZ MODAL -->
+    <div id="quiz-modal" class="fixed inset-0 z-50 hidden flex items-center justify-center bg-slate-900/80 backdrop-blur-sm p-4">
+        <div class="bg-white w-full max-w-3xl rounded-2xl shadow-2xl p-6 md:p-8 relative max-h-[90vh] overflow-y-auto">
+            <button onclick="closeQuiz()" class="absolute top-4 right-4 text-slate-400 hover:text-red-500"><i class="fa-solid fa-xmark text-2xl"></i></button>
+            <h2 id="quiz-title" class="text-3xl font-black text-slate-800 mb-2"></h2>
+            <div id="quiz-questions-container" class="space-y-4 mt-4"></div>
+            <button id="quiz-submit-btn" onclick="submitQuiz()" class="mt-8 w-full bg-dengue text-white font-bold py-4 rounded-xl shadow-lg">Submit Answers</button>
+            <div id="quiz-result-container" class="hidden mt-6 p-4 rounded-xl bg-slate-100"></div>
+        </div>
+    </div>
+
+    <script>
+        let unlockedSections = ['home'];
+        // QUIZZES (10 questions each)
+        const quizzes = {
+            overview: { title: "Overview & Epidemiology", next: "clinical", questions: [
+                { q: "Dengue virus is transmitted by:", options: ["Aedes aegypti", "Anopheles mosquito", "Culex mosquito", "Tsetse fly"], ans: 0 },
+                { q: "Incubation period for dengue is typically:", options: ["1–2 days", "3–14 days (5–7 days)", "15–30 days", "2 months"], ans: 1 },
+                { q: "In the Philippines, dengue cases peak during:", options: ["January–March", "July–September", "October–December", "Year‑round no peak"], ans: 1 },
+                { q: "As of March 1, 2025, DOH reported a __% increase in dengue cases compared to 2024.", options: ["40%", "73%", "20%", "100%"], ans: 1 },
+                { q: "The case fatality rate for dengue in the Philippines (2025) is approximately:", options: ["5%", "2%", "0.4%", "10%"], ans: 2 },
+                { q: "Which regions had the highest number of dengue cases in the Philippines (2025)?", options: ["Visayas only", "Calabarzon, NCR, Central Luzon", "Mindanao only", "CAR only"], ans: 1 },
+                { q: "Aedes aegypti mosquitoes bite most actively:", options: ["At night", "Early morning and late afternoon", "Only at noon", "Only indoors"], ans: 1 },
+                { q: "Second infection with a different dengue serotype increases risk for:", options: ["Asymptomatic infection", "Severe dengue (DHF/DSS)", "No change", "Immunity to all serotypes"], ans: 1 },
+                { q: "Dengue is endemic in the Philippines. True or false?", options: ["True", "False"], ans: 0 },
+                { q: "The number of dengue cases in the Philippines (Jan–Jun 2025) exceeded:", options: ["50,000", "100,000", "150,000", "200,000"], ans: 1 }
+            ]},
+            clinical: { title: "Clinical Classification (DF, DHF, DSS)", next: "phases", questions: [
+                { q: "Classic Dengue Fever (DF) is characterized by:", options: ["Plasma leakage", "Thrombocytopenia only", "Sudden fever, myalgia, rash, no plasma leakage", "Shock"], ans: 2 },
+                { q: "DHF requires all of the following EXCEPT:", options: ["Fever", "Bleeding tendency", "Hypotension", "Thrombocytopenia"], ans: 2 },
+                { q: "Dengue Shock Syndrome (DSS) is DHF plus:", options: ["Hemoconcentration", "Circulatory failure (narrow pulse pressure, hypotension)", "Leukopenia", "Positive tourniquet test"], ans: 1 },
+                { q: "WHO DHF Grade I is characterized by:", options: ["Spontaneous bleeding", "Positive tourniquet test", "Shock", "Profound shock"], ans: 1 },
+                { q: "DHF Grade III (DSS) presents with:", options: ["Undetectable BP", "Weak pulse, narrow pulse pressure", "No symptoms", "Only fever"], ans: 1 },
+                { q: "Tourniquet test is positive if petechiae count is:", options: [">10 per inch²", ">20 per inch²", ">5 per inch²", "Any petechiae"], ans: 1 },
+                { q: "Thrombocytopenia in DHF is defined as platelet count:", options: ["<150,000", "<100,000", "<50,000", "<20,000"], ans: 1 },
+                { q: "Hemoconcentration in DHF is indicated by:", options: ["Decreased Hct", "Increased Hct (≥20% rise from baseline)", "Normal Hct", "Anemia"], ans: 1 },
+                { q: "Which of the following is NOT a criterion for DHF?", options: ["Fever", "Bleeding tendency", "Plasma leakage", "Hypotension"], ans: 3 },
+                { q: "In DSS, pulse pressure is:", options: ["Wide (>40 mmHg)", "Narrow (<20 mmHg)", "Normal (30 mmHg)", "Fluctuating"], ans: 1 }
+            ]},
+            phases: { title: "Clinical Phases (Febrile, Critical, Recovery)", next: "warning", questions: [
+                { q: "Febrile phase of dengue usually lasts:", options: ["1–2 days", "2–7 days", "1 week", "2 weeks"], ans: 1 },
+                { q: "The critical phase of dengue typically begins at:", options: ["Start of fever", "Defervescence (fever drops)", "Recovery period", "One week after fever"], ans: 1 },
+                { q: "Plasma leakage in dengue occurs during:", options: ["Febrile phase", "Critical phase", "Recovery phase", "Throughout illness"], ans: 1 },
+                { q: "During the recovery phase, the patient may experience:", options: ["Worsening shock", "Fluid reabsorption, diuresis, bradycardia", "Increased Hct", "Severe bleeding"], ans: 1 },
+                { q: "Which phase is most dangerous for progression to shock?", options: ["Febrile", "Critical (24–48 hours after defervescence)", "Recovery", "Incubation"], ans: 1 },
+                { q: "A patient’s fever subsides on day 4, but then develops severe abdominal pain and vomiting. This suggests:", options: ["Normal recovery", "Critical phase with warning signs", "Bacterial infection", "Medication side effect"], ans: 1 },
+                { q: "In the critical phase, Hct typically:", options: ["Decreases", "Increases (hemoconcentration)", "Remains normal", "Fluctuates"], ans: 1 },
+                { q: "The hallmark feature of the critical phase is:", options: ["High fever", "Plasma leakage leading to shock", "Rash", "Bradycardia"], ans: 1 },
+                { q: "Recovery phase is characterized by:", options: ["Increasing Hct", "Decreasing Hct (hemodilution)", "Worsening organ failure", "Persistent shock"], ans: 1 },
+                { q: "The total duration of the critical phase is approximately:", options: ["12 hours", "24–48 hours", "5–7 days", "2 weeks"], ans: 1 }
+            ]},
+            warning: { title: "Warning Signs & Diagnosis", next: "management", questions: [
+                { q: "Which of the following is a dengue warning sign (WHO)?", options: ["Mild headache", "Severe abdominal pain", "Low‑grade fever", "Rash"], ans: 1 },
+                { q: "The NS1 antigen test is most useful in the first:", options: ["1–5 days of fever", "After 1 week", "Only in recovery", "Anytime"], ans: 0 },
+                { q: "DOH recommends NS1 RDT as front‑line diagnosis at:", options: ["Tertiary hospitals", "Rural Health Units (RHU)", "Private clinics only", "Home use"], ans: 1 },
+                { q: "IgM antibodies appear by:", options: ["Day 1 of fever", "Day 5–7 of fever", "Only after 2 weeks", "Never in dengue"], ans: 1 },
+                { q: "A positive tourniquet test supports the diagnosis of:", options: ["DF only", "DHF", "Influenza", "Chikungunya"], ans: 1 },
+                { q: "Which laboratory finding is characteristic of DHF?", options: ["Leukocytosis", "Thrombocytopenia (<100,000)", "Normal Hct", "Lymphopenia"], ans: 1 },
+                { q: "A patient presents with fever for 3 days, platelet count 80,000, Hct 45% (baseline 35%). This indicates:", options: ["Normal", "Hemoconcentration, possible DHF", "Bleeding", "Dehydration"], ans: 1 },
+                { q: "Which of the following is NOT a dengue warning sign?", options: ["Persistent vomiting", "Bleeding from gums", "Mild cough", "Lethargy"], ans: 2 },
+                { q: "Dengue infection can be confirmed by:", options: ["NS1 antigen, IgM ELISA, RT‑PCR", "Only CBC", "Only X‑ray", "Only urinalysis"], ans: 0 },
+                { q: "A child with fever, hepatomegaly, and rising Hct should be evaluated for:", options: ["Gastroenteritis", "DHF", "UTI", "Pneumonia"], ans: 1 }
+            ]},
+            management: { title: "Treatment & Fluid Management", next: "nursing", questions: [
+                { q: "In DF, the drug of choice for fever and pain is:", options: ["Aspirin", "Ibuprofen", "Paracetamol", "Mefenamic acid"], ans: 2 },
+                { q: "NSAIDs are avoided in dengue because:", options: ["They cause fever", "They increase risk of bleeding", "They are ineffective", "They cause hepatotoxicity"], ans: 1 },
+                { q: "The recommended first‑line IV fluid for DHF/DSS is:", options: ["D5W", "0.9% NaCl or Ringer’s lactate", "Albumin", "Dextrose 50%"], ans: 1 },
+                { q: "In DSS, initial fluid resuscitation is:", options: ["10 mL/kg bolus", "20 mL/kg bolus", "5 mL/kg bolus", "No IV fluids"], ans: 1 },
+                { q: "Daily follow‑up for outpatient dengue is recommended until:", options: ["Afebrile for 24h", "Afebrile for 48h", "Platelet count normal", "One week"], ans: 1 },
+                { q: "The goal of fluid therapy in the critical phase is:", options: ["Prevent dehydration and shock", "Induce diuresis", "Lower fever", "Increase platelet count"], ans: 0 },
+                { q: "A patient with DHF receiving IV fluids develops puffy eyelids, dyspnea, and ascites. This indicates:", options: ["Improving condition", "Fluid overload", "Recovery phase", "Need for more fluids"], ans: 1 },
+                { q: "Blood transfusion is indicated in dengue if:", options: ["Platelets <50,000", "Hct drops significantly with ongoing bleeding", "Fever persists", "All patients"], ans: 1 },
+                { q: "Paracetamol maximum daily dose for adults is:", options: ["2 g", "3 g", "4 g", "6 g"], ans: 2 },
+                { q: "In children, paracetamol dose is:", options: ["5–10 mg/kg/dose", "10–15 mg/kg/dose q4‑6h", "20–25 mg/kg/dose", "30 mg/kg/dose"], ans: 1 }
+            ]},
+            nursing: { title: "Nursing Care & Complications", next: "prevention", questions: [
+                { q: "In a patient with dengue, the nurse should monitor for shock by assessing:", options: ["Temperature only", "BP, pulse rate, capillary refill, urine output", "Only Hct", "Only platelet count"], ans: 1 },
+                { q: "To prevent bleeding, the nurse should avoid:", options: ["Oral care", "Soft toothbrush", "Intramuscular injections", "Frequent oral fluids"], ans: 2 },
+                { q: "A patient with DSS and narrow pulse pressure requires:", options: ["Decreased IV fluids", "Immediate fluid resuscitation and ICU transfer", "Discharge home", "Only oral fluids"], ans: 1 },
+                { q: "The mnemonic ‘C.A.R.E.’ for nursing care includes:", options: ["Check, Assess, Recognize, Educate", "Clean, Apply, Rest, Exercise", "Calculate, Adjust, Refer, Evaluate", "None"], ans: 0 },
+                { q: "Fluid overload in dengue can be recognized by:", options: ["Bradycardia", "Puffy eyelids, dyspnea, crackles", "Increased urine output", "Hypotension"], ans: 1 },
+                { q: "A patient with DHF and platelet count of 20,000/µL is at risk for:", options: ["Hemorrhage", "Shock", "Seizure", "Dehydration"], ans: 0 },
+                { q: "During the recovery phase, the nurse should monitor for:", options: ["Shock", "Fluid overload (due to fluid reabsorption)", "Hyperthermia", "Increased bleeding"], ans: 1 },
+                { q: "A child with dengue and severe abdominal pain should be evaluated for:", options: ["Constipation", "Hypovolemic shock", "Appendicitis", "Gastroenteritis"], ans: 1 },
+                { q: "The best position for a patient in shock is:", options: ["Supine", "Trendelenburg", "Left lateral with legs elevated", "Prone"], ans: 2 },
+                { q: "The nurse should encourage oral intake of:", options: ["Dark soda", "Oral rehydration solution, water, fresh juice", "Caffeinated drinks", "Alcohol"], ans: 1 }
+            ]},
+            prevention: { title: "Prevention (4S Strategy)", next: "flashcards", questions: [
+                { q: "The DOH 4S strategy includes all EXCEPT:", options: ["Search & destroy", "Self‑protection", "Seek early consultation", "Stockpile antiviral drugs"], ans: 3 },
+                { q: "Which measure is part of ‘Search and destroy’?", options: ["Cover water containers", "Wear long sleeves", "Consult doctor if fever >2 days", "Support fogging"], ans: 0 },
+                { q: "‘Self‑protection’ against dengue includes:", options: ["Fogging only", "Using insect repellent and wearing long clothes", "Vaccination", "Taking prophylactic antibiotics"], ans: 1 },
+                { q: "Early consultation is recommended if fever lasts more than:", options: ["1 day", "2 days", "5 days", "7 days"], ans: 1 },
+                { q: "Fogging should be done:", options: ["Routinely weekly", "Only in hotspot areas (imminent outbreak)", "Year‑round", "Never"], ans: 1 },
+                { q: "Which of the following is NOT a mosquito breeding site?", options: ["Stagnant water in containers", "Flower vases with water", "Empty tires", "Flowing river"], ans: 3 },
+                { q: "The main vector of dengue is:", options: ["Aedes aegypti (day‑biting)", "Anopheles (night‑biting)", "Culex (filariasis)", "Mansonia"], ans: 0 },
+                { q: "A community‑based approach to prevent dengue includes:", options: ["Clean surroundings, cover water drums, check gutters", "Only fogging", "Only insect repellent", "Only vaccination"], ans: 0 },
+                { q: "Which of the following is an effective insect repellent ingredient?", options: ["DEET, picaridin", "Paracetamol", "Vitamin C", "Zinc oxide"], ans: 0 },
+                { q: "Dengue vaccine (Dengvaxia) in the Philippines is recommended only for:", options: ["All children", "Seropositive individuals (previous dengue infection)", "Infants", "Elderly"], ans: 1 }
+            ]},
+            flashcards: { title: "Flashcards & Mnemonics", next: "final_quiz_sec", questions: [
+                { q: "The mnemonic for DOH dengue prevention is:", options: ["4S", "W.A.R.N.", "C.A.R.E.", "D.H.F."], ans: 0 },
+                { q: "In 4S, the first ‘S’ stands for:", options: ["Search & destroy", "Self‑protection", "Seek early consultation", "Support fogging"], ans: 0 },
+                { q: "The mnemonic for dengue warning signs is:", options: ["W.A.R.N.", "C.A.R.E.", "4S", "D.H.F."], ans: 0 },
+                { q: "In W.A.R.N., ‘A’ stands for:", options: ["Abdominal pain", "Arthralgia", "Appetite loss", "Ascites"], ans: 0 },
+                { q: "The mnemonic for nursing care is:", options: ["C.A.R.E.", "W.A.R.N.", "4S", "D.H.F."], ans: 0 },
+                { q: "In C.A.R.E., ‘R’ stands for:", options: ["Recognize warning signs", "Rest", "Reassure", "Record"], ans: 0 },
+                { q: "DSS stands for:", options: ["Dengue Shock Syndrome", "Dengue Severe Syndrome", "Dengue Symptom Scale", "None"], ans: 0 },
+                { q: "A flashcard for ‘tourniquet test’ answer is:", options: ["Positive if >20 petechiae per inch²", "Positive if >10 petechiae", "Positive if bruising", "Always positive"], ans: 0 },
+                { q: "A flashcard for ‘NS1 antigen’ answer is:", options: ["Detects viral protein in first 1‑5 days", "Detects IgM antibodies", "Detects IgG antibodies", "Confirms past infection"], ans: 0 },
+                { q: "A flashcard for ‘management of DF at home’ answer is:", options: ["Oral fluids, paracetamol, avoid NSAIDs, daily follow‑up", "IV fluids, blood transfusion", "Antibiotics, steroids", "Surgery"], ans: 0 }
+            ]}
+        };
+        // Build final 50-item exam
+        let finalQ = [];
+        for(let sec of ['overview','clinical','phases','warning','management','nursing','prevention','flashcards']) {
+            finalQ.push(...quizzes[sec].questions.slice(0,6));
+        }
+        while(finalQ.length < 50) finalQ.push({ q: "The single most important measure to prevent dengue mortality is:", options: ["Early recognition of warning signs and prompt fluid resuscitation", "Antibiotics", "Steroids", "Platelet transfusion"], ans: 0 });
+        quizzes.final_quiz = { title: "Final 50‑Item Exam: Dengue Fever (All Types)", next: null, questions: finalQ };
+
+        let currentQuiz = null;
+        let dengueChart = null, phaseChart = null;
+
+        function initCharts() {
+            const ctx1 = document.getElementById('dengueChart')?.getContext('2d');
+            if(ctx1 && !dengueChart) {
+                dengueChart = new Chart(ctx1, {
+                    type: 'bar',
+                    data: {
+                        labels: ['DF (mild)', 'DHF (moderate)', 'DSS (severe)'],
+                        datasets: [{ label: 'Relative severity index', data: [20, 60, 100], backgroundColor: '#b45309', borderRadius: 6 }]
+                    },
+                    options: { responsive: true, maintainAspectRatio: true, plugins: { legend: { position: 'top' } } }
+                });
+            }
+            const ctx2 = document.getElementById('phaseChart')?.getContext('2d');
+            if(ctx2 && !phaseChart) {
+                phaseChart = new Chart(ctx2, {
+                    type: 'line',
+                    data: {
+                        labels: ['Day 1-2', 'Day 3-4', 'Day 5-6', 'Day 7-8', 'Day 9-10'],
+                        datasets: [
+                            { label: 'Fever', data: [40, 39, 38, 37, 36.5], borderColor: '#ef4444', fill: false },
+                            { label: 'Hematocrit (relative)', data: [100, 110, 120, 110, 95], borderColor: '#b45309', fill: false },
+                            { label: 'Platelets (relative)', data: [100, 80, 50, 70, 90], borderColor: '#3b82f6', fill: false }
+                        ]
+                    },
+                    options: { responsive: true, maintainAspectRatio: true, plugins: { legend: { position: 'top' } } }
+                });
+            }
+        }
+
+        function toggleFlash(el) { const ans = el.querySelector('.flash-answer'); if(ans) ans.classList.toggle('hidden'); }
+        function unlockFirstSection() { if(!unlockedSections.includes('overview')) { unlockedSections.push('overview'); updateSidebarUI(); } showSection('overview'); }
+        function showSection(sectionId) {
+            if (!unlockedSections.includes(sectionId) && sectionId !== 'home') { alert("Complete the Active Recall Quiz at the bottom of the previous section to unlock."); return; }
+            document.querySelectorAll('.content-section').forEach(el => el.classList.add('hidden'));
+            document.getElementById(sectionId)?.classList.remove('hidden');
+            document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('bg-dengue-light','text-dengue-dark','border-r-4','border-dengue-dark'));
+            const activeBtn = document.getElementById('btn-'+sectionId);
+            if(activeBtn) activeBtn.classList.add('bg-dengue-light','text-dengue-dark','border-r-4','border-dengue-dark');
+            if(window.innerWidth < 768) document.getElementById('sidebar').classList.add('hidden');
+            if((sectionId === 'overview' || sectionId === 'phases') && !dengueChart) setTimeout(initCharts, 50);
+        }
+        function updateSidebarUI() {
+            const sections = ['home','overview','clinical','phases','warning','management','nursing','prevention','flashcards','final_quiz_sec'];
+            sections.forEach(sec => {
+                const btn = document.getElementById('btn-'+sec);
+                if(!btn) return;
+                const lock = btn.querySelector('.fa-lock'), icon = btn.querySelector('.nav-icon');
+                if(unlockedSections.includes(sec) || sec==='home') { btn.classList.remove('locked-section'); if(lock) lock.classList.add('hidden'); if(icon) icon.classList.remove('hidden'); }
+                else { btn.classList.add('locked-section'); if(lock) lock.classList.remove('hidden'); if(icon) icon.classList.add('hidden'); }
+            });
+        }
+        function openQuiz(sectionId) { currentQuiz = sectionId; const qd = quizzes[sectionId]; if(!qd) return; document.getElementById('quiz-title').innerHTML = qd.title; const container = document.getElementById('quiz-questions-container'); container.innerHTML = ''; qd.questions.forEach((q, idx) => { let html = `<div class="bg-slate-50 p-4 rounded-xl mb-4"><p class="font-bold mb-3">${idx+1}. ${q.q}</p><div class="space-y-2">`; q.options.forEach((opt,oi) => { html += `<label class="flex items-center space-x-3 p-2 rounded-lg hover:bg-white cursor-pointer"><input type="radio" name="q${idx}" value="${oi}" class="form-radio text-dengue"><span>${opt}</span></label>`; }); html += `</div><div class="feedback-${idx} text-sm mt-2 hidden"></div></div>`; container.innerHTML += html; }); document.getElementById('quiz-submit-btn').classList.remove('hidden'); document.getElementById('quiz-result-container').classList.add('hidden'); document.getElementById('quiz-modal').classList.remove('hidden'); }
+        function closeQuiz() { document.getElementById('quiz-modal').classList.add('hidden'); }
+        function submitQuiz() {
+            const qd = quizzes[currentQuiz];
+            if(!qd) return;
+            let score = 0;
+            for(let i=0; i<qd.questions.length; i++) {
+                const sel = document.querySelector(`input[name="q${i}"]:checked`);
+                if(sel && parseInt(sel.value)===qd.questions[i].ans) score++;
+                const fbDiv = document.querySelector(`.feedback-${i}`);
+                if(fbDiv){
+                    fbDiv.classList.remove('hidden');
+                    const correctTxt = qd.questions[i].options[qd.questions[i].ans];
+                    if(sel && parseInt(sel.value)===qd.questions[i].ans) { fbDiv.innerHTML='<span class="text-green-700">✓ Correct</span>'; fbDiv.parentElement?.classList.add('quiz-feedback-correct'); }
+                    else { const selectedTxt = sel? qd.questions[i].options[parseInt(sel.value)]:"No answer"; fbDiv.innerHTML=`<span class="text-red-700">✗ Incorrect. Correct: ${correctTxt}. You answered: ${selectedTxt}</span>`; fbDiv.parentElement?.classList.add('quiz-feedback-wrong'); }
+                }
+            }
+            let percent = (score/qd.questions.length)*100;
+            let resultDiv = document.getElementById('quiz-result-container');
+            document.getElementById('quiz-submit-btn').classList.add('hidden');
+            resultDiv.classList.remove('hidden');
+            if(percent>=75){
+                if(currentQuiz==='final_quiz'){ resultDiv.innerHTML=`<div class="text-green-600 text-4xl text-center">🎉 Excellent! Score ${score}/${qd.questions.length} (${percent}%)<br>You mastered Dengue Fever</div><button onclick="closeQuiz()" class="mt-4 bg-dengue text-white px-6 py-2 rounded-xl">Close</button>`; return; }
+                if(quizzes[currentQuiz].next && !unlockedSections.includes(quizzes[currentQuiz].next)) unlockedSections.push(quizzes[currentQuiz].next);
+                if(quizzes[currentQuiz].next === 'flashcards' && !unlockedSections.includes('final_quiz_sec')) unlockedSections.push('final_quiz_sec');
+                updateSidebarUI();
+                resultDiv.innerHTML=`<div class="text-green-600 text-3xl text-center">✅ Passed! (${score}/${qd.questions.length})</div><button onclick="closeQuiz(); showSection('${quizzes[currentQuiz].next}')" class="mt-4 bg-green-600 text-white px-6 py-2 rounded-xl">Unlock Next Section</button>`;
+            } else { resultDiv.innerHTML=`<div class="text-red-600 text-3xl text-center">❌ Failed: ${score}/${qd.questions.length} (${percent}%)<br>Need 75%</div><button onclick="openQuiz('${currentQuiz}')" class="mt-4 bg-slate-600 text-white px-6 py-2 rounded-xl">Try Again</button>`; }
+        }
+        function toggleRecallMode() { const active = !document.body.classList.contains('recall-mode'); const toggle=document.getElementById('recall-toggle'),knob=document.getElementById('recall-knob'); if(active){ document.body.classList.add('recall-mode'); toggle.classList.add('bg-dengue-dark'); knob.classList.add('translate-x-6'); } else { document.body.classList.remove('recall-mode'); toggle.classList.remove('bg-dengue-dark'); knob.classList.remove('translate-x-6'); } }
+        function toggleMobileMenu() { const s=document.getElementById('sidebar'); if(s.classList.contains('hidden')) s.classList.remove('hidden','flex','absolute','h-full','z-50'); else s.classList.add('hidden'); }
+        document.addEventListener('DOMContentLoaded', () => { updateSidebarUI(); document.querySelectorAll('.reveal-text').forEach(el => el.addEventListener('click', function(){ if(document.body.classList.contains('recall-mode')) this.classList.toggle('revealed'); })); });
+    </script>
+</body>
+</html>
